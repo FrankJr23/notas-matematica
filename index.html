@@ -2,7 +2,7 @@
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>[hidden]{display:none!important}</style>
+<style>[hidden]{display:none!important}button.sgb{width:100%;background:none;color:inherit;font:inherit;text-align:left;border:0;box-shadow:none;padding:6px 8px;margin:0;border-radius:10px;cursor:pointer}button.sgb:hover:not(:disabled),button.sgb.on{background:var(--gr)}button.sgb:disabled{cursor:default}</style>
 <title>Painel de Desempenho</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;800&display=swap">
 <style>
@@ -69,7 +69,7 @@ if(!E||!E.B)E={B:[]};
 let D={S:[],G:{},P:[],V:{}},pw='',cur=null;const kc={};
 async function sLogin(m){if(!E.salt)return null;const d=await kdf(dg(m),ub(E.salt),E.it),id=hx(d.slice(32)),b=E.B.find(x=>x.i===id);if(!b)return null;try{return await dec(b,d.slice(0,32))}catch(e){return null}}
 const lock=()=>`<div class="c"><h2>Painel do professor</h2><p class="mu">Digite a senha do painel para abrir os dados.</p><input id="pw" type="password" autocomplete="current-password"><div class="row"><button class="b" data-a="unlock">Abrir</button></div><p id="lerr" class="wr"></p></div>`;
-let isOwner=false,view='login',me=null,tri=null,pt=null,ov=null,tf='',note='';
+let isOwner=false,view='login',me=null,sg=null,tri=null,pt=null,ov=null,tf='',note='';
 const TR=[1,2,3],st=id=>D.S.find(s=>s.s===id),first=n=>n.split(' ')[0];
 const g=(id,q)=>{const a=D.G[id];return a&&typeof a[q-1]==='number'?a[q-1]:null};
 const par=q=>(cur?cur.P:D.P).includes(q);
@@ -141,12 +141,12 @@ const cov=(t,q)=>{const A=D.S.filter(s=>s.t===t);return A.filter(s=>g(s.s,q)!=nu
 const tmean=(t,q)=>{const L=D.S.filter(s=>(t?s.t===t:cov(s.t,q))&&g(s.s,q)!=null).map(s=>g(s.s,q));return L.length&&(!t||cov(t,q))?mean(L):null};
 const avm=(t,q,k)=>{const L=D.S.filter(s=>!t||s.t===t).map(s=>(D.V[s.s]||{})[q]).filter(a=>a&&a[k]!=null&&!(a[k]===0&&par(q))).map(a=>a[k]);return L.length?mean(L):null};
 const ameans=S=>{const L=S.map(ann).filter(x=>x!=null);return L.length?mean(L):null};
-function donut(vals){const n=[vals.filter(v=>v>=70).length,vals.filter(v=>v>=40&&v<70).length,vals.filter(v=>v<40).length],T=n[0]+n[1]+n[2],C=2*Math.PI*54,col=['var(--ok)','var(--am)','var(--wr)'],nm=['Aprovado (70 ou mais)','Atenção (40 a 69)','Crítico (abaixo de 40)'];
+function donut(vals,sel){const n=[vals.filter(v=>v>=70).length,vals.filter(v=>v>=40&&v<70).length,vals.filter(v=>v<40).length],T=n[0]+n[1]+n[2],C=2*Math.PI*54,col=['var(--ok)','var(--am)','var(--wr)'],nm=['Aprovado (70 ou mais)','Atenção (40 a 69)','Crítico (abaixo de 40)'];
 if(!T)return '<p class="mu">Sem médias para mostrar.</p>';
 let acc=0,s=`<svg viewBox="0 0 140 140" width="150" style="flex:none" role="img" aria-label="Distribuição dos alunos por situação"><circle cx="70" cy="70" r="54" fill="none" style="stroke:var(--bd)" stroke-width="18"/>`;
 n.forEach((c,i)=>{if(!c)return;const d=c/T*C;s+=`<circle cx="70" cy="70" r="54" fill="none" style="stroke:${col[i]}" stroke-width="18" stroke-dasharray="${d} ${C-d}" stroke-dashoffset="${-acc}" transform="rotate(-90 70 70)"><title>${nm[i]}: ${c}</title></circle>`;acc+=d});
 s+=`<text x="70" y="70" text-anchor="middle" font-size="26" font-weight="800" style="fill:var(--tx)">${Math.round(n[0]/T*100)}%</text><text x="70" y="88" text-anchor="middle" font-size="10" style="fill:var(--mu)">aprovados</text></svg>`;
-return `<div class="hero" style="gap:16px">${s}<div>${n.map((c,i)=>`<div class="lt" style="border:0;padding:4px 0"><span class="dot" style="background:${col[i]}"></span><div>${nm[i]}<small>${c} aluno${c===1?'':'s'} · ${Math.round(c/T*100)}%</small></div></div>`).join('')}</div></div>`}
+return `<div class="hero" style="gap:16px">${s}<div>${n.map((c,i)=>`<button type="button" class="lt sgb${sel===i?' on':''}" data-a="sg" data-v="${i}" aria-pressed="${sel===i}" ${c&&i>0?'':'disabled'}><span class="dot" style="background:${col[i]}"></span><div>${nm[i]}<small>${c} aluno${c===1?'':'s'} · ${Math.round(c/T*100)}%</small></div>${c&&i>0?`<span class="v mu">${sel===i?'Ocultar lista':'Ver lista'}</span>`:''}</button>`).join('')}</div></div>`}
 const hbars=R=>R.map(r=>`<div class="hbr"><span>${esc(r[0])}</span><div class="hbt"><i style="width:${Math.min(r[1],100)}%;background:var(--${SM(r[1]).k})"></i><u></u></div><b>${f1(r[1])}</b></div>`).join('');
 const lgd=S=>`<div class="lg">${S.map(o=>`<span><i style="background:${o.c};opacity:${o.o||1}"></i>${esc(o.n)}</span>`).join('')}</div>`;
 function cols(cats,ser){const W=640,H=270,pl=34,pb=26,pt0=14,iw=W-pl-10,ih=H-pb-pt0,y=v=>pt0+ih-(v/100)*ih,gw=iw/cats.length,bw=Math.min(36,(gw*.78)/ser.length),sp=bw*ser.length;
@@ -169,14 +169,19 @@ if(!tf&&!q)c3=mk('Evolução das turmas ao longo do ano',tu.concat('Escola'),TS.
 else if(!tf&&q>=2)c3=mk('Avaliações do '+lab(q)+' por turma',tu.concat('Escola'),[0,1,2].map(k=>({n:'AV'+(k+1),c:'var(--ac)',o:op[k],v:tu.map(x=>avm(x,q,k)).concat(avm('',q,k))})));
 else if(tf&&!q)c3=mk('Evolução da turma '+esc(tf)+' x escola',TR.map(t=>t+'º tri'+star(t)),[{n:'Turma '+tf,c:'var(--ac)',v:TR.map(t=>tmean(tf,t))},{n:'Escola',c:'var(--am)',v:TR.map(t=>tmean('',t))}]);
 else if(tf&&q){const ca=q>=2?['Média','AV1','AV2','AV3']:['Média'],gv=t=>[tmean(t,q)].concat(q>=2?[0,1,2].map(k=>avm(t,q,k)):[]);c3=mk('Turma '+esc(tf)+' x escola: '+lab(q),ca,[{n:'Turma '+tf,c:'var(--ac)',v:gv(tf)},{n:'Escola',c:'var(--am)',v:gv('')}])}
-const sit=`<div class="c"><h2>Situação dos alunos</h2><p class="mu" style="margin-top:0">${esc(ttl)} · ${tf?'turma '+esc(tf):'toda a escola'}</p>${donut(vals)}</div>`;
+const sit=`<div class="c"><h2>Situação dos alunos</h2><p class="mu" style="margin-top:0">${esc(ttl)} · ${tf?'turma '+esc(tf):'toda a escola'}</p>${donut(vals,sg)}</div>`;
 const R2=tf?[['Turma '+tf,vals.length?mean(vals):null],['Escola',E.length?mean(E):null]]:tu.map(t=>[t,q?tmean(t,q):ameans(D.S.filter(s=>s.t===t))]).concat([['Escola',q?tmean('',q):ameans(D.S)]]);
 const c2=`<div class="c"><h2>${tf?'Turma '+esc(tf)+' x escola':(q?'Média do trimestre por turma':'Média anual por turma')}</h2><p class="mu" style="margin-top:0">${esc(ttl)}</p>${hbars(R2.filter(r=>r[1]!=null))||'<p class="mu">Sem médias.</p>'}<p class="mu" style="margin:8px 0 0">A linha vertical marca os 70 pontos.${falt.length?' Sem média suficiente (menos da metade da turma): '+esc(falt.join('; '))+'.':''}</p></div>`;
 const cell=v=>v==null?'—':f1(v),hdr=q?'<th>Média</th>'+(q>=2?'<th>AV1</th><th>AV2</th><th>AV3</th>':''):'<th>1º</th><th>2º</th><th>3º</th><th>Anual</th>';
+const SGN=['Aprovados (70 ou mais)','Alunos em atenção (40 a 69)','Alunos críticos (abaixo de 40)'],SGF=[x=>x>=70,x=>x>=40&&x<70,x=>x<40];
+let lst='';
+if(sg!=null){const Z=W.filter(x=>SGF[sg](x.a)).sort((x,y)=>x.a-y.a||x.n.localeCompare(y.n));
+lst=`<div class="c" id="sglist"><div class="row" style="justify-content:space-between;align-items:center"><h2 style="margin:0">${SGN[sg]} · ${Z.length}</h2><button data-a="sg" data-v="${sg}">Fechar lista</button></div><p class="mu" style="margin:0 0 8px">${esc(ttl)} · ${tf?'turma '+esc(tf):'toda a escola'}. Ordenados da menor para a maior média. "Falta" é quanto falta para chegar a 70.</p><div class="sc"><table><tr><th>Escola</th><th>Turma</th><th>Aluno</th><th>Matrícula</th>${hdr}<th>Falta</th><th></th></tr>${Z.map(x=>`<tr><td>${rk(x.a)}º</td><td>${esc(x.t)}</td><td>${esc(x.n)}</td><td class="${x.m?'':'wr'}">${x.m?esc(x.m):'faltando'}</td>${q?`<td>${cell(x.a)}</td>${q>=2?[0,1,2].map(k=>`<td>${cell(((D.V[x.s]||{})[q]||[])[k])}</td>`).join(''):''}`:`${TR.map(t=>`<td>${cell(g(x.s,t))}</td>`).join('')}<td><b>${cell(x.a)}</b></td>`}<td class="${sg===2?'wr':'am'}"><b>${f1(70-x.a)}</b></td><td><button data-a="see" data-v="${x.s}">Ver</button></td></tr>`).join('')}</table></div></div>`}
 const rows=L.map(x=>`<tr><td>${x.a!=null?rk(x.a)+'º':'—'}</td><td>${esc(x.t)}</td><td>${esc(x.n)}</td><td class="${x.m?'':'wr'}">${x.m?esc(x.m):'faltando'}</td>${q?`<td>${cell(x.a)}</td>${q>=2?[0,1,2].map(k=>`<td>${cell(((D.V[x.s]||{})[q]||[])[k])}</td>`).join(''):''}`:`${TR.map(t=>`<td>${cell(g(x.s,t))}</td>`).join('')}<td><b>${cell(x.a)}</b></td>`}<td class="${x.a==null?'mu':x.a>=70?'up':x.a>=40?'am':'wr'}">${x.a==null?'Sem nota':x.a>=70?'Aprovado':x.a>=40?'Atenção':'Crítico'}</td><td><button data-a="see" data-v="${x.s}">Ver</button></td></tr>`).join('');
 return `<div class="c"><h2>Painel do professor</h2><div class="row"><button class="p ${q?'':'on'}" data-a="ptri" data-v="">Visão anual</button>${TR.map(x=>`<button class="p ${x===q?'on':''}" data-a="ptri" data-v="${x}">${lab(x)}</button>`).join('')}</div><div class="row"><button class="p ${tf?'':'on'}" data-a="tf" data-v="">Toda a escola</button>${tu.map(t=>`<button class="p ${tf===t?'on':''}" data-a="tf" data-v="${esc(t)}">Turma ${esc(t)}</button>`).join('')}</div><div class="mu">Trimestre em andamento: ${TR.map(t=>`<label style="margin-right:12px"><input type="checkbox" data-a="par" data-v="${t}" ${par(t)?'checked':''} style="width:auto"> ${t}º</label>`).join('')}</div></div>
 <div class="g"><div class="k"><span>Alunos</span><b>${L.length}</b></div><div class="k"><span>${esc(ttl)}</span><b>${vals.length?f1(mean(vals)):'—'}</b></div><div class="k"><span>Aprovados (70 ou mais)</span><b class="up">${nv(v=>v>=70)}</b></div><div class="k"><span>Em atenção (40 a 69)</span><b class="am">${nv(v=>v>=40&&v<70)}</b></div><div class="k"><span>Críticos (abaixo de 40)</span><b class="wr">${nv(v=>v<40)}</b></div><div class="k"><span>Sem média</span><b>${L.length-W.length}</b></div><div class="k"><span>Sem matrícula</span><b class="${L.some(x=>!x.m)?'wr':''}">${L.filter(x=>!x.m).length}</b></div></div>
 <div class="two">${sit}${c2}</div>
+${lst}
 ${c3}
 <div class="c sc"><table><tr><th>Escola</th><th>Turma</th><th>Aluno</th><th>Matrícula</th>${hdr}<th>Situação</th><th></th></tr>${rows}</table></div>
 <div class="c"><h2>Lançar notas e matrículas</h2><p class="mu">Uma linha por aluno: matrícula;nome completo;turma;trimestre;média (0 a 100);AV1;AV2;AV3. As três AV são opcionais e só valem do 2º trimestre em diante; se a média ficar em branco e as três AV vierem, a média é calculada. Os dados são mesclados com os atuais: só as notas das linhas enviadas mudam. Para só vincular a matrícula, deixe trimestre e média vazios. O aluno é reconhecido pela matrícula ou, se ela estiver em branco, pelo nome completo e turma.</p><textarea id="csv" placeholder="2026101;Maria da Silva;8M;3;72,5"></textarea><div class="row"><button data-a="imp">Aplicar</button><button class="b" data-a="pub">Publicar para os alunos</button></div><p id="msg" class="mu">${esc(note)}</p><p class="mu">Os alunos só veem as mudanças depois de você publicar.</p></div>
@@ -209,8 +214,9 @@ else if(a==='out'){ov=null;cur=null;view=isOwner?(pw?'prof':'lock'):'login'}
 else if(a==='tab'){view=v==='prof'&&!pw?'lock':v;cur=null}
 else if(a==='see'){ov=null;cur=blobFor(D.S.find(s=>s.s===v));view='stu';tri=null}
 else if(a==='tri')tri=+v;
-else if(a==='tf')tf=v;
-else if(a==='ptri')pt=v?+v:null;
+else if(a==='tf'){tf=v;sg=null}
+else if(a==='sg'){sg=sg===+v?null:+v;if(sg!=null)setTimeout(()=>{const e=document.getElementById('sglist');e&&e.scrollIntoView({behavior:'smooth',block:'nearest'})},80)}
+else if(a==='ptri'){pt=v?+v:null;sg=null}
 else if(a==='par'){const q=+v;D.P=par(q)?D.P.filter(x=>x!==q):D.P.concat(q);note='Status do '+q+'º trimestre alterado. Falta publicar.'}
 else if(a==='unlock'){const p=$('#pw').value,el=$('#lerr');if(!p)return;el.textContent='Abrindo…';try{const k=await kdf(p,ub(E.M.salt),E.it);D=await dec(E.M,k.slice(0,32));D.V=D.V||{};pw=p;view='prof'}catch(x){el.textContent='Senha incorreta.';return}}
 else if(a==='pwd'){const p=$('#npw').value;note=p.length<12?'A senha precisa ter 12 ou mais caracteres.':(pw=p,'Senha trocada. Falta publicar para valer.')}
